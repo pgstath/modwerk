@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 2,
+  "id": "trackpatterns",
+  "key": "TRACK PATTERNS",
+  "name": "Track Patterns",
+  "version": "0.1.0-experimental",
+  "category": "machines",
+  "author": {
+    "github": "pgstath",
+    "credits": [
+      "pgstath: engine, firmware glue, key gesture, trig LEDs, investigation, tests and documentation.",
+      "Sequencer addresses and findings (no code) from devilfish707's Play Modes investigation (Octaplay, MIT), which cites octabam (Sam Banks), SCALE QUANTIZER and DIRECT JUMP (Tim Hastie), the KYOTI notes (Zac-Kyoti) and EUCLID; the LED model from octabam's PANEL.md."
+    ]
+  },
+  "nativeManifest": "manifest.py",
+  "presentation": {
+    "label": "PATTERN PER TRACK",
+    "family": "Sequencer",
+    "summary": "Give each track its own pattern of the playing bank, clip style: hold TRACK and PATTERN, press a trig; the change lands at the end of that track's loop.",
+    "overview": "Track Patterns lets each of the 16 tracks (T1–T8, M1–M8) play its own pattern of the playing bank while the global pattern, the Part and every other track carry on. Hold a TRACK key, hold PATTERN and press a trig key: that track switches to the pattern at the end of its own loop, so it stays in time; while stopped the change applies at once. The track's trigs, conditions and locks come from its own pattern; tempo, the Part's machines, samples and FX, scenes and MASTER LENGTH stay the playing pattern's. Any global pattern change, a bank change included, brings every track back. For the current track on its own pattern the trig LEDs blink that pattern's trigs outside GRID REC, and the stock trigs as a warning in GRID REC; TRACK + PATTERN lights the pattern the track plays.",
+    "highlights": [
+      "A pattern per track, audio and MIDI tracks, switched at the end of each track's own loop",
+      "Hold TRACK n + PATTERN, press TRIG k; a popup names the change (T1 ▸ A03, T1 FOLLOWS)",
+      "Any global pattern or bank change brings every track back to the global pattern",
+      "Trig LEDs show the track's own pattern and warn in GRID REC",
+      "No clock of its own: follows the sequencer's steps, lengths and transport"
+    ],
+    "usage": [
+      "Play a pattern. Hold TRACK 1, hold PATTERN and press TRIG 3: the popup reads T1 ▸ A03 and track 1 plays A03 from the end of its current loop; every other track stays on the playing pattern.",
+      "In MIDI mode the TRACK keys address M1–M8 in the same way.",
+      "To bring one track back, use the same gesture with the playing pattern's trig (popup T1 FOLLOWS); any global pattern change, chain step or bank change brings every track back.",
+      "Under SCALE MODE PER TRACK a track loops at its own length in its pattern, inside the playing pattern's MASTER LENGTH (set INF to let it run in full); under NORMAL every track wraps at the playing pattern's length.",
+      "Editing and recording still address the playing pattern; overrides are not saved with the project."
+    ]
+  },
+  "access": {
+    "location": "Automatic when included in a build: on the main screen hold a TRACK key and PATTERN, then press a trig key.",
+    "steps": [
+      "Include Track Patterns in your build. It uses no effect slot, no menu and no knob.",
+      "Load a project whose bank holds at least two patterns with different trigs, and press PLAY.",
+      "Hold TRACK 1, then hold PATTERN, and press TRIG 3: the popup reads T1 ▸ A03 and track 1 switches to A03 at the end of its loop.",
+      "Repeat the gesture with the playing pattern's trig to return one track (T1 FOLLOWS), or change the global pattern to return them all."
+    ],
+    "screenshots": []
+  },
+  "controls": [],
+  "compatibility": {
+    "firmware": "1.40C",
+    "effectId": null,
+    "location": "Project sequencer",
+    "conflicts": [],
+    "uiClaims": [
+      "key:TRACK+PATTERN+TRIG"
+    ],
+    "limitations": [
+      "Deliberate stock-flow change: with a TRACK key held, PATTERN + TRIG changes that track's pattern instead of the global pattern; PATTERN + TRIG without a TRACK key stays stock.",
+      "Deliberate stock-flow change: for the current track on its own pattern, the trig LEDs blink that pattern's trigs outside GRID REC (TRACKS trig mode) and the stock trigs in GRID REC; with every track following, the LEDs are stock.",
+      "Editing, GRID REC and LIVE REC address the playing (global) pattern, not the track's own.",
+      "Overrides are runtime state: not saved with the project; after a reload or power cycle every track follows the global pattern.",
+      "A track's speed (scale) stays the playing pattern's; under SCALE MODE NORMAL every track wraps at the playing pattern's length.",
+      "Open: a silent hang after 5–20 minutes on the main screen with an override set was seen on two octabam builds of this source and is not yet explained.",
+      "Played on one MKII (octabam builds of this source); no image built by Modwerk's builder has been tested on a unit, and the USB (base) path is not built yet.",
+      "Track speed other than 1x, swing, a long run and MIDI note-offs across a switch with a long note are untested.",
+      "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."
+    ]
+  },
+  "resources": {
+    "recorded": "22 Oct 2026: emulator counts, build memory, MKII CF METER; chip cycles unmeasured",
+    "storage": {
+      "label": "DRAM",
+      "display": "3,457 B unit in the DRAM platform reserve",
+      "value": 3457,
+      "unit": "bytes",
+      "method": "static",
+      "conditions": "Code, read-only data and the 84-byte state (tp_state 68 B, tp_toast 16 B) in the SDRAM platform reserve; no .bss, heap, battery RAM or DSP words; stack about 72 B below the tick's caller (-fstack-usage). See TESTING.md.",
+      "source": "TESTING.md"
+    },
+    "processing": {
+      "label": "ColdFire processing",
+      "display": "≤ 3,700 instructions per 16-track step (about 2,360 typical)",
+      "value": 3700,
+      "unit": "instructions/event",
+      "method": "emulator",
+      "conditions": "Instruction counts per detour call under ot_emu --mkii (gesture, MIDI and global-change run), the replayed stock instructions included: audio tick 86/95, MIDI tick 89/98, audio advance 60/186, MIDI advance 60/84 (median/max); the LED pass 52/658 per pass. Chip cycles not measured. On an MKII, CF METER at 300 BPM with 15 tracks on every step: no difference with every track following; 1.5 points less idle with eight overrides, the LED pass and gestures; frame interrupt unchanged.",
+      "source": "TESTING.md"
+    },
+    "impact": {
+      "conditions": "16 tracks (8 audio, 8 MIDI) stepping at once at the highest tempo, eight of them on their own patterns, the current track's trig LEDs drawn, gestures during playback.",
+      "cpu": {
+        "level": "low",
+        "basis": "measured-comparison",
+        "rationale": "Per track per step one pattern lookup and one length lookup (60–186 instructions per call); the LED pass runs once per LED refresh. CF METER on an MKII: no measurable change with every track following, 1.5 points less idle with eight overrides and gestures.",
+        "source": "TESTING.md"
+      },
+      "dsp": {
+        "level": "minimal",
+        "basis": "source-estimate",
+        "rationale": "No DSP code, tables or buffers; stock DSP processing is unchanged.",
+        "source": "TESTING.md"
+      },
+      "memory": {
+        "level": "low",
+        "basis": "source-estimate",
+        "rationale": "A 3,457-byte DRAM unit with 84 bytes of state; no per-instance copies, no battery RAM.",
+        "source": "TESTING.md"
+      }
+    }
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "Host suites for the engine and firmware glue pass, including planted defects and the check that trackpatterns.s matches the C. Under the ColdFire port the gesture moved T1 and M1 at their own loop starts, a global change cleared both and the trig LEDs behaved as documented, on an MKI and an MKII. On one MKII the contributor reported octabam builds of this source as passing: functional tests and trig LEDs (OCTABAM1-3), beside KITS and DIRECT JUMP (OCTABAM8), 32 steps and other trig modes (OCTABAM9). CF METER compared the unit's load with and without the module. Not yet: a Modwerk-built image on a unit, the USB path, chip cycles per detour, a long run.",
+    "hardwareStatus": "reported",
+    "evidenceRevision": "a3a7e3288da379ca1b8ff244ef4bae2a50af3fcf",
+    "gates": [
+      "modules/trackpatterns/verify.py"
+    ]
+  },
+  "license": {
+    "spdx": "MIT",
+    "file": "LICENSE",
+    "declaration": "Original code by pgstath, MIT. Sequencer addresses and findings are cited from public module investigations and read from the author's own OS; no code from them, and no Elektron firmware, extracted routines, tables or images are included."
+  },
+  "media": []
+}
