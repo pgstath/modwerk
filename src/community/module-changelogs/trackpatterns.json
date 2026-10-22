@@ -5,9 +5,9 @@
     "changes": [
       "First release. Each of the 16 tracks (T1–T8, M1–M8) can play its own pattern of the playing bank, clip style: hold TRACK n, hold PATTERN and press TRIG k; the track switches at the end of its own loop (at once while stopped). A popup names the change (T1 ▸ A03, T1 FOLLOWS). The same gesture with the playing pattern's trig brings one track back; any global pattern, chain or bank change brings every track back.",
       "Trig LEDs for the current track on its own pattern: its trigs blink outside GRID REC (from the 16 steps its playhead is in), the stock trigs blink in GRID REC as a warning, and TRACK n + PATTERN lights the pattern track n plays.",
-      "Stock-flow changes, listed in the README: with a TRACK key held, PATTERN + TRIG changes that track's pattern instead of the global one; the trig LEDs change only while the current track plays its own pattern.",
+      "Stock-flow changes, listed in the README and approved by the owner: with a TRACK key held, PATTERN + TRIG changes that track's pattern instead of the global one; the trig LEDs change only while the current track plays its own pattern.",
       "Limits: editing and recording address the playing pattern; overrides are not saved; a track's speed stays the playing pattern's; under SCALE MODE NORMAL every track wraps at the playing pattern's length.",
-      "Tested: host suites and the ColdFire port, and on one MKII in octabam builds of this source (functional tests, trig LEDs, 32 steps, other trig modes, beside KITS and DIRECT JUMP, a CF METER comparison). Not yet: an image built by Modwerk's builder on a unit, the USB path, chip cycles per detour, a long run. Open: a silent hang seen on two builds after 5–20 minutes is not yet explained."
+      "Tested: host suites and the ColdFire port; on one MKII the native Modwerk build OCTABAM15 passed all 11 functional, save/power-cycle, LED and 32-step tests, and earlier octabam builds of the same source passed the same tests and ran beside KITS and DIRECT JUMP; CF METER measured the load with and without the module, also under a DIN MIDI flood. Not yet: the USB path, stuck notes and drops under a flood, chip cycles per detour, a long run. A silent hang seen on two early builds has not been repeatable since."
     ]
   }
 ]

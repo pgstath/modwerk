@@ -468,10 +468,47 @@ table uses the ELF's own section sizes.
   the module; with eight overrides, the LED pass and gestures, 1.49 points
   less idle and the frame interrupt unchanged.
 
-**Not run on a unit yet.** OCTABAM15 has not been flashed. The
-qualification's hardware record cites `OCTABAM9`, an octabam build of the
-same C and assembly (octabam `f1eb1507`), until a run of OCTABAM15 is
-reported.
+### On the unit: MKII, 22 Oct 2026, reported by pgstath
+
+Image `OCTABAM15` above, flashed from the card file (`5f246da3…`). Since
+`07ab1485`, the code in this folder (C, assembly, `manifest.py`) is
+unchanged; only documentation, media and records have changed.
+
+The test project was the one from tests 1–8: A01, A02 and A03 with distinct
+trigs on T1 and M1, and A04 with T1 at 32 steps. The contributor reported
+all 11 tests as passed; nothing more detailed was reported.
+
+| # | test | result |
+|---|---|---|
+| 1 | stock PATTERN + TRIG 3 while A01 plays: every track to A03 at the pattern's end | pass |
+| 2 | hold TRACK 1, hold PATTERN, TRIG 3: popup `T1 ▸ A03`, T1 switches at its own loop start, the others stay | pass |
+| 3 | TRACK 1 + PATTERN + TRIG 1: `T1 FOLLOWS`, T1 back on A01 at its loop start | pass |
+| 4 | MIDI mode, TRACK 1 + PATTERN + TRIG 3: M1 to A03 at its loop start, no hanging note | pass |
+| 5 | T1 on A03, then PATTERN + TRIG 2 with no TRACK key: everything on A02 at the end, T1 included | pass |
+| 6 | the gesture while stopped, then PLAY: T1 plays A03 from step 1 | pass |
+| 7 | T1 on A03, SAVE PROJECT, power off and on, reload: the patterns unchanged, every track following | pass |
+| L1 | T1 on A03, current, outside GRID REC: A03's trigs blink, the running light keeps moving | pass |
+| L2 | GRID REC: A01's trigs blink as the warning | pass |
+| L3 | hold TRACK 1 + PATTERN: A03's key lit as the current pattern | pass |
+| 8 | A01 PER TRACK, MASTER LENGTH 32, T1 on A04: T1 plays all 32 steps, the LEDs follow its page | pass |
+
+It ran for under 20 minutes; the exact time was not recorded. Not tested on
+this image: the USB (base) path, MKI, track speeds other than 1x, swing.
+
+**Owner review of the stock-flow changes.** The two changes listed in the
+README's "Compatibility and limitations" (TRACK + PATTERN + TRIG, and the
+trig LEDs for a track on its own pattern) were reviewed and approved by the
+owner on 22 Oct 2026. Approval was given directly to the contributor, as
+reported by the contributor; there is no public link.
+
+**The silent hang.** On OCTABAM2 and OCTABAM3 (21 Oct 2026), the unit hung
+silently after 5–20 minutes on the main playback screen with an override
+set. It has not been repeatable since:
+- the CF METER takes (120 s each);
+- the flood runs;
+- the OCTABAM15 run (under 20 minutes, so not a full test of that window).
+
+It is recorded as an open observation, not a blocker.
 
 ## MIDI flood stress run (22 Oct 2026, MKII)
 

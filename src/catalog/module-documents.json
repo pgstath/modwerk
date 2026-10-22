@@ -8632,13 +8632,13 @@
           "key:TRACK+PATTERN+TRIG"
         ],
         "limitations": [
-          "Deliberate stock-flow change: with a TRACK key held, PATTERN + TRIG changes that track's pattern instead of the global pattern; PATTERN + TRIG without a TRACK key stays stock.",
-          "Deliberate stock-flow change: for the current track on its own pattern, the trig LEDs blink that pattern's trigs outside GRID REC (TRACKS trig mode) and the stock trigs in GRID REC; with every track following, the LEDs are stock.",
+          "Deliberate stock-flow change: with a TRACK key held, PATTERN + TRIG changes that track's pattern instead of the global pattern; PATTERN + TRIG without a TRACK key stays stock. Approved by the owner (22 Oct 2026, as reported by the contributor).",
+          "Deliberate stock-flow change: for the current track on its own pattern, the trig LEDs blink that pattern's trigs outside GRID REC (TRACKS trig mode) and the stock trigs in GRID REC; with every track following, the LEDs are stock. Approved by the owner (22 Oct 2026, as reported by the contributor).",
           "Editing, GRID REC and LIVE REC address the playing (global) pattern, not the track's own.",
           "Overrides are runtime state: not saved with the project; after a reload or power cycle every track follows the global pattern.",
           "A track's speed (scale) stays the playing pattern's; under SCALE MODE NORMAL every track wraps at the playing pattern's length.",
-          "Open: a silent hang after 5–20 minutes on the main screen with an override set was seen on two octabam builds of this source and is not yet explained.",
-          "Played on one MKII (octabam builds of this source); no image built by Modwerk's builder has been tested on a unit, and the USB (base) path is not built yet.",
+          "A silent hang after 5–20 minutes on the main screen with an override set was seen on two early octabam builds of this source and has not been repeatable since; an open observation, not a blocker.",
+          "Played on one MKII: the native Modwerk build OCTABAM15 and earlier octabam builds of the same source. The USB (base) path is not built yet.",
           "Track speed other than 1x, swing, a long run and MIDI note-offs across a switch with a long note are untested.",
           "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."
         ]
@@ -8687,9 +8687,9 @@
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Host suites for the engine and firmware glue pass, including planted defects and the check that trackpatterns.s matches the C. Under the ColdFire port the gesture moved T1 and M1 at their own loop starts, a global change cleared both and the trig LEDs behaved as documented, on an MKI and an MKII. On one MKII the contributor reported octabam builds of this source as passing: functional tests and trig LEDs (OCTABAM1-3), beside KITS and DIRECT JUMP (OCTABAM8), 32 steps and other trig modes (OCTABAM9). CF METER compared the unit's load with and without the module. Not yet: a Modwerk-built image on a unit, the USB path, chip cycles per detour, a long run.",
+        "summary": "Host suites for the engine and firmware glue pass, including planted defects and the check that trackpatterns.s matches the C. Under the ColdFire port the gesture moved T1 and M1 at their own loop starts, a global change cleared both and the trig LEDs behaved as documented, on an MKI and an MKII. On one MKII the contributor reported OCTABAM15, the native Modwerk build of this folder, passing all 11 functional, save/power-cycle, LED and 32-step tests; earlier octabam builds of the same source passed the same tests and ran beside KITS and DIRECT JUMP. CF METER compared the unit's load with and without the module, with no flood and under a DIN MIDI flood. Not yet: the USB path, stuck notes and drops under a flood, chip cycles per detour, a long run.",
         "hardwareStatus": "reported",
-        "evidenceRevision": "f1eb1507a298275c3ff7763fb4aab8de692d0102",
+        "evidenceRevision": "07ab1485513c92eb3bf660e053f95dd2d56a1fc1",
         "gates": [
           "modules/trackpatterns/verify.py"
         ],
@@ -8712,7 +8712,7 @@
           },
           "moduleVersion": "0.1.0-experimental",
           "sourceSha256": "6c40676aac8c9d43441f2db897118cec48200bfdd7e1bfb59f05365e280fbb67",
-          "imageSha256": "4fb7b88903d21f5ea90f524978c14a0d79e063cd986c0c9dbc93d406eb16d2e7",
+          "imageSha256": "5f246da31ea85fd5018564a21b82284902bf9f2ce81b2a7d508365c64d2f304b",
           "cycles": [
             {
               "processor": "coldfire",
@@ -8772,14 +8772,14 @@
             "model": "MKII",
             "testedOn": "2026-10-22",
             "tester": "pgstath",
-            "sourceRevision": "f1eb1507a298275c3ff7763fb4aab8de692d0102",
-            "imageSha256": "4fb7b88903d21f5ea90f524978c14a0d79e063cd986c0c9dbc93d406eb16d2e7",
-            "summary": "OCTABAM9, octabam's build (remix trackpatterns, octabam f1eb1507) of the same C and assembly, on the contributor's MKII: T1 on a 32-step pattern by the gesture under PER TRACK with MASTER LENGTH 32 played all 32 steps with the trig LEDs following the playhead's page, and in the other trig modes, CHROMATIC included, the module drew no trig LED; reported as working as expected. The same source in OCTABAM8 (octabam-core, image 2a698188…) passed the gesture on T1 and M1, a global change, and save and power cycle; earlier builds of this source passed the full functional and LED checks (TESTING.md).",
+            "sourceRevision": "07ab1485513c92eb3bf660e053f95dd2d56a1fc1",
+            "imageSha256": "5f246da31ea85fd5018564a21b82284902bf9f2ce81b2a7d508365c64d2f304b",
+            "summary": "OCTABAM15, the native Modwerk build of this folder (module/trackpatterns 07ab1485; TRACK PATTERNS and the 14 stock effects), flashed from the card file on the contributor's MKII. With the test project of the earlier runs (A01-A03 distinct trigs on T1 and M1, A04 with T1 at 32 steps), all 11 sheet tests reported as passed: stock PATTERN + TRIG; the gesture on T1 (T1 ▸ A03 at its own loop start, the others staying); T1 FOLLOWS; the gesture on M1 in MIDI mode with no hanging note; a global change taking the override with it; the gesture while stopped then PLAY; SAVE PROJECT, power cycle and reload (patterns unchanged, every track following); the three trig LED checks (blink outside GRID REC with the running light, the warning in GRID REC, TRACK + PATTERN lighting the current pattern); a 32-step override under PER TRACK with MASTER LENGTH 32, the LEDs following its page.",
             "limitations": [
-              "The tested images are octabam builds of the same C and assembly; this folder's manifest.py is the Modwerk form of the same eight detours. The Modwerk build OCTABAM15 (5f246da3…) has not run on a unit yet.",
-              "Not tested on the unit: the USB (base) path, MKI, track speeds other than 1x, swing, a long run, MIDI note-offs across a switch with a long note; MASTER LENGTH 16, NORMAL and GRID REC page 2 with a 32-step override were not reported separately.",
-              "Open: a silent hang after 5-20 minutes on the main screen with an override set was seen on OCTABAM2 and OCTABAM3 and is not yet explained.",
-              "How long the tests ran was not recorded."
+              "Ran under 20 minutes; the exact duration was not recorded.",
+              "Not tested on this image: the USB (base) path and its install, self-test, Keep/Undo and removal; MKI; track speeds other than 1x; swing; MIDI note-offs across a switch with a long note.",
+              "A silent hang after 5-20 minutes with an override set was seen on two earlier octabam builds of this source (OCTABAM2, OCTABAM3) and has not been repeatable since; recorded as an open observation, not a blocker.",
+              "Earlier MKII runs of octabam builds of the same C and assembly (OCTABAM1-3, 8, 9) and the CF METER and DIN flood measurements are in TESTING.md."
             ],
             "report": "TESTING.md"
           }

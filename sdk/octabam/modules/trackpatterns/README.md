@@ -9,10 +9,13 @@ samples and FX stay as they are. ColdFire-only (no DSP code, no effect
 slot), for original OS 1.40C.
 
 **Experimental.**
-- Played on one MKII in octabam builds of this source, 21–22 Oct 2026.
-- Not yet played as an image built by Modwerk's builder, and no USB (base)
-  package yet.
-- A silent hang seen on two builds is still open (below).
+- Played on one MKII, 21–22 Oct 2026:
+  - in octabam builds of this source;
+  - in `OCTABAM15`, the native Modwerk build of this folder: all 11 sheet
+    tests passed.
+- No USB (base) package yet.
+- A silent hang seen on two early builds has not been repeatable since
+  (below).
 
 See [TESTING.md](TESTING.md).
 
@@ -132,19 +135,23 @@ In MIDI mode the TRACK keys address M1–M8. Press [TRACK n] first, then
 - Other trig modes: CHROMATIC (checked on a unit and under the port) and
   the other modes (on a unit) show stock's display only.
 
+Both changes were reviewed and approved by the owner on 22 Oct 2026, as
+reported by the contributor.
+
 **Limits of v1.**
 - Editing and recording address the playing pattern.
 - Overrides are runtime state, not saved with the project.
 - A track's speed (scale) stays the playing pattern's.
 
 **Open.**
-- A silent hang after 5–20 minutes on the main playback screen with an
-  override set was seen on two octabam builds of this source (`OCTABAM2`,
-  `OCTABAM3`). It is not yet explained.
-- Track speeds other than 1x, swing, a long run, and MIDI note-offs across
-  a switch with a long note are untested.
-- No image built by Modwerk's builder has been played on a unit, and the
-  USB (base) package is not built yet.
+- **A silent hang.** After 5–20 minutes on the main playback screen with an
+  override set, it was seen on two early octabam builds of this source
+  (`OCTABAM2`, `OCTABAM3`). It has not been repeatable since, on later
+  builds or in the stress runs. It is recorded as an open observation, not
+  a blocker.
+- **Untested:** track speeds other than 1x, swing, a long run, and MIDI
+  note-offs across a switch with a long note.
+- **No USB package yet:** the USB (base) package is not built yet.
 
 **Memory.** Like every DRAM module, the build gives up about 10 MB of
 sample memory to the platform reserve.
