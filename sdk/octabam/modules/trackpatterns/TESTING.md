@@ -504,7 +504,7 @@ has no DIN MIDI interface and OCTABAM15 has no USB MIDI.
   "port only" in its README), not this module, and is not recorded as a
   stress result.
 - `evidence/performance.json` leaves the stress figures empty and says why.
-- The finding is drafted as an octabam issue (not yet filed).
+- The finding is filed as [sambanks/octabam#856](https://github.com/sambanks/octabam/issues/856).
 
 ## Not yet
 
