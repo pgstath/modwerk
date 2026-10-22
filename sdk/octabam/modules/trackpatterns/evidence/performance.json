@@ -25,6 +25,6 @@
     "stuckNotes": null,
     "hangs": null,
     "dropped": null,
-    "droppedExplanation": "No MIDI flood run yet. The module takes no MIDI input; its MIDI-track path was exercised by the gesture on M1 (no hanging note across a switch, MKII) and by the CF METER workload with eight MIDI tracks on every step at 300 BPM."
+    "droppedExplanation": "Blocked: no MIDI flood run on DIN. The contributor has no DIN MIDI interface, and OCTABAM15 (the Modwerk build) has no USB MIDI. Attempted over USB MIDI on 22 Oct 2026 with octabam's USB module (OCTABAM10 with TRACK PATTERNS, OCTABAM11 without, octabam 05d8701c): 999 three-byte messages/s plus 240 BPM clock for 90 s, STOP at 50 s and START at 55 s, 0 send errors. Both images, with and without the module, went to 0.0 % idle and frame interrupts up to 393-410 us during the flood, and the MIDI tracks sent no notes (the UI was stuck on OCTABAM11), so the run measures octabam's USB MIDI receive path rather than this module and cannot qualify it. No stuck-note, hang or drop figure is claimed for the module. The module takes no MIDI input; its MIDI-track path was exercised by the gesture on M1 (no hanging note across a switch, MKII) and by the CF METER workload with eight MIDI tracks on every step at 300 BPM."
   }
 }

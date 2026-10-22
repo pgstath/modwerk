@@ -473,7 +473,41 @@ qualification's hardware record cites `OCTABAM9`, an octabam build of the
 same C and assembly (octabam `f1eb1507`), until a run of OCTABAM15 is
 reported.
 
+## MIDI flood stress run: blocked (22 Oct 2026)
+
+Modwerk's performance record asks for a flood of notes, CC and clock at
+the DIN wire rate. It was attempted over USB MIDI, since the contributor
+has no DIN MIDI interface and OCTABAM15 has no USB MIDI.
+
+**The run.**
+- Images: the CF METER pair from octabam `05d8701c`, both with octabam's
+  USB module:
+  - OCTABAM10, with this module;
+  - OCTABAM11, without it.
+- The flood: a CoreMIDI sender (`midiflood`, local) sent 999 three-byte
+  messages a second for 90 s, on channels 1–7: note-on, note-off and CC 1.
+  - It also sent 240 BPM clock, START, STOP at 50 s and START at 55 s.
+  - CoreMIDI refused no message.
+- Monitoring: CF METER on T8, captured over USB audio, and the Octatrack's
+  own MIDI output, logged.
+
+| image | idle during the flood | frame interrupt, median mean | longest |
+|---|---|---|---|
+| OCTABAM11 (no TRACK PATTERNS) | 0.0% in every 2 s cycle | 302.8 µs | 409.5 µs |
+| OCTABAM10 (TRACK PATTERNS) | 0.0% in every 2 s cycle | 323.8 µs | 392.9 µs |
+
+- In both runs the MIDI tracks sent no notes during the flood, while the
+  clock output continued.
+- On OCTABAM11 the UI was stuck.
+- Without this module the unit saturated in the same way. The run
+  therefore measures octabam's USB MIDI receive path (hardware status
+  "port only" in its README), not this module, and is not recorded as a
+  stress result.
+- `evidence/performance.json` leaves the stress figures empty and says why.
+- The finding is drafted as an octabam issue (not yet filed).
+
 ## Not yet
 
-On the unit: a long run, more tracks at once. Anywhere: the track's speed
-from its own pattern, persistence, chip cycles per detour.
+On the unit: a long run, more tracks at once, a DIN MIDI flood. Anywhere:
+the track's speed from its own pattern, persistence, chip cycles per
+detour.
