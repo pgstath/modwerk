@@ -473,41 +473,83 @@ qualification's hardware record cites `OCTABAM9`, an octabam build of the
 same C and assembly (octabam `f1eb1507`), until a run of OCTABAM15 is
 reported.
 
-## MIDI flood stress run: blocked (22 Oct 2026)
+## MIDI flood stress run (22 Oct 2026, MKII)
 
 Modwerk's performance record asks for a flood of notes, CC and clock at
-the DIN wire rate. It was attempted over USB MIDI, since the contributor
-has no DIN MIDI interface and OCTABAM15 has no USB MIDI.
+the DIN wire rate, stopping mid-note and changing Part and channel, then
+counting stuck notes, hangs and drops.
 
-**The run.**
+**Setup.**
 - Images: the CF METER pair from octabam `05d8701c`, both with octabam's
   USB module:
   - OCTABAM10, with this module;
-  - OCTABAM11, without it.
+  - OCTABAM11, without it, the control.
 - The flood: a CoreMIDI sender (`midiflood`, local) sent 999 three-byte
-  messages a second for 90 s, on channels 1–7: note-on, note-off and CC 1.
-  - It also sent 240 BPM clock, START, STOP at 50 s and START at 55 s.
-  - CoreMIDI refused no message.
-- Monitoring: CF METER on T8, captured over USB audio, and the Octatrack's
-  own MIDI output, logged.
+  messages a second for 90 s: note-on, note-off (each note held about
+  50 ms) and CC 1.
+  - It also sent clock, START, STOP at 50 s and START at 55 s.
+  - CoreMIDI refused no message in any run.
+- Monitoring: CF METER on T8 (`cfmeter.py`, captured over USB audio), and
+  the Octatrack's own MIDI output on its USB port.
+- The unit followed the flood's clock and transport (CLOCK RECEIVE and
+  TRANSPORT RECEIVE on).
 
-| image | idle during the flood | frame interrupt, median mean | longest |
-|---|---|---|---|
-| OCTABAM11 (no TRACK PATTERNS) | 0.0% in every 2 s cycle | 302.8 µs | 409.5 µs |
-| OCTABAM10 (TRACK PATTERNS) | 0.0% in every 2 s cycle | 323.8 µs | 392.9 µs |
+**Runs.** "Idle" is the mean over the take: about 10 s before the flood,
+then the flood.
 
-- In both runs the MIDI tracks sent no notes during the flood, while the
-  clock output continued.
-- On OCTABAM11 the UI was stuck.
-- Without this module the unit saturated in the same way. The run
-  therefore measures octabam's USB MIDI receive path (hardware status
-  "port only" in its README), not this module, and is not recorded as a
-  stress result.
-- `evidence/performance.json` leaves the stress figures empty and says why.
-- The finding is filed as [sambanks/octabam#856](https://github.com/sambanks/octabam/issues/856).
+| run | path | channels | clock | idle, mean (lowest cycle) | frame interrupt, average of the means | longest | cycles over the 362.8 µs frame |
+|---|---|---|---|---|---|---|---|
+| OCTABAM10 | USB | 1–7 | 240 BPM | 4.8% (0.0%) | 306.4 µs | 392.9 µs | 21 of 52 |
+| OCTABAM11 | USB | 1–7 | 240 BPM | 2.9% (0.0%) | 281.1 µs | 409.5 µs | 16 of 52 |
+| OCTABAM11 | DIN | 1–7 | 250 BPM | 3.0% (0.0%) | 315.0 µs | 417.2 µs | 20 of 51 |
+| **OCTABAM11** | **DIN** | **16** | **250 BPM** | **34.6% (20.6%)** | **189.9 µs** | **343.4 µs** | **0** |
+| **OCTABAM10** | **DIN** | **16** | **250 BPM** | **37.6% (3.3%)** | **171.2 µs** | **344.3 µs** | **0** |
+
+The DIN runs went through a USB-MIDI to DIN interface (QinHeng CH345) into
+MIDI IN, at 3,097 bytes a second.
+
+**Channels 1–7 are T1–T7's trigger channels.** About 333 note-ons a second
+starting voices, plus 333 CC changes a second, saturate the unit without
+this module, over USB and over DIN alike. That is stock behaviour under
+this input:
+- the UI was stuck on OCTABAM11 (USB);
+- the MIDI tracks sent nothing.
+
+Issue [sambanks/octabam#856](https://github.com/sambanks/octabam/issues/856)
+first attributed it to the USB MIDI path; the DIN runs contradict that.
+
+**Channel 16, which no track listens to, is the stress result** recorded in
+`evidence/performance.json`.
+- With this module, idle and the longest frame interrupt match the control
+  within the noise: 37.6% against 34.6%, and 344.3 µs against 343.4 µs.
+- No frame interrupt exceeded the frame.
+- Hangs: 0. The unit's clock output ran throughout (longest gap 126 ms),
+  and the CF METER readout never stopped.
+- The contributor reports the sequencer playing, M1–M4 sending, and the
+  TRACK PATTERNS gestures done at the prompts.
+- The takes differ in two ways: M1–M4 were given trigs on every step before
+  the OCTABAM10 take, and only that take had gestures (one 2 s cycle at
+  3.3% idle during them).
+
+**Stuck notes: not measured.**
+- The MIDI tracks' notes do not reach the USB port. octabam's USB module
+  mirrors `midi_send` and the realtime-byte sender, and on this unit only
+  clock came back:
+  - during every flood;
+  - in a 20 s run with only clock and transport sent;
+  - on the unit's own clock with M1–M4 playing.
+- Channel 14 notes did come back before the first flood, from a source not
+  identified.
+- The interface's DIN input received nothing from the unit's MIDI OUT, so
+  nothing showed whether a note was left hanging after STOP, the Part
+  change or the channel change.
+
+**Drops: not measured.** The module takes no MIDI input, and the unit gives
+no echo of what it received.
 
 ## Not yet
 
-On the unit: a long run, more tracks at once, a DIN MIDI flood. Anywhere:
+On the unit: a long run, more tracks at once, stuck notes and drops under
+a MIDI flood (needs a working DIN monitor of MIDI OUT). Anywhere:
 the track's speed from its own pattern, persistence, chip cycles per
 detour.

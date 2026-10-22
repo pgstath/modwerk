@@ -12,19 +12,19 @@
   },
   "load": {
     "frameUs": 362.8,
-    "stockLongestUs": 326.4,
-    "moduleLongestUs": 336.2,
-    "stockIdlePercent": 17.58,
-    "moduleIdlePercent": 16.1,
-    "method": "cfmeter.py on 120 s USB captures of T8 (CF METER on T8 FX2, BURN/MEM/DBRN 0) on the contributor's MKII, 22 Oct 2026: OCTABAM11 (USB, CF METER, CF METER IDLE and the stock effects except DARK REV) against OCTABAM10 (the same plus TRACK PATTERNS), both from octabam 05d8701c. Workload, the same in every take: 300 BPM, a trig on every step of T1-T7 and M1-M8 in A01, A02 and A03 copies of A01; with the module, T1-T4 and M1-M4 on A02/A03, T1 current outside GRID REC (the LED pass) and a few gestures. Longest frame interrupt: the worst 2 s cycle; idle: the mean over 59 cycles. A sequencer load, not a MIDI flood: no MIDI input was sent. With every track following, idle was 17.78 % (no difference within the noise). The stock take had no key presses, so part of the difference is the gestures' UI work."
+    "stockLongestUs": 343.4,
+    "moduleLongestUs": 344.3,
+    "stockIdlePercent": 34.56,
+    "moduleIdlePercent": 37.55,
+    "method": "cfmeter.py on 105 s USB captures of T8 (CF METER on T8 FX2, BURN/MEM/DBRN 0) on the contributor's MKII, 22 Oct 2026, under the same MIDI flood into DIN MIDI IN (USB-MIDI to DIN interface): 999 three-byte messages/s (note-on, note-off, CC 1) on channel 16, which no track listens to, plus 250 BPM clock, START, STOP at 50 s and START at 55 s, for 90 s (1,099 messages/s, 3,097 bytes/s, 0 send errors). Stock = OCTABAM11 (USB, CF METER, CF METER IDLE, stock effects but DARK REV), module = OCTABAM10 (the same plus TRACK PATTERNS), both octabam 05d8701c; the unit followed the flood's clock and transport. Longest frame interrupt: the worst 2 s cycle; idle: the mean over 51-52 cycles (about 10 s before the flood included); no cycle exceeded the 362.8 us frame in either take. Differences between the takes: M1-M4 were given trigs on every step before the OCTABAM10 take, and only that take had TRACK PATTERNS gestures (one cycle at 3.3 % idle during them). Without a flood (300 BPM, 15 tracks on every step, 120 s): 17.58 % vs 17.78 % idle with every track following, 16.10 % with eight overrides and gestures. The same flood on T1-T7's channels instead saturates the control image too (0.0 % idle, frame interrupt to 417 us): stock behaviour, see TESTING.md."
   },
   "stress": {
-    "floodMessagesPerSecond": null,
-    "clockBpm": null,
-    "seconds": null,
+    "floodMessagesPerSecond": 1099,
+    "clockBpm": 250,
+    "seconds": 90,
     "stuckNotes": null,
-    "hangs": null,
+    "hangs": 0,
     "dropped": null,
-    "droppedExplanation": "Blocked: no MIDI flood run on DIN. The contributor has no DIN MIDI interface, and OCTABAM15 (the Modwerk build) has no USB MIDI. Attempted over USB MIDI on 22 Oct 2026 with octabam's USB module (OCTABAM10 with TRACK PATTERNS, OCTABAM11 without, octabam 05d8701c): 999 three-byte messages/s plus 240 BPM clock for 90 s, STOP at 50 s and START at 55 s, 0 send errors. Both images, with and without the module, went to 0.0 % idle and frame interrupts up to 393-410 us during the flood, and the MIDI tracks sent no notes (the UI was stuck on OCTABAM11), so the run measures octabam's USB MIDI receive path rather than this module and cannot qualify it. No stuck-note, hang or drop figure is claimed for the module. The module takes no MIDI input; its MIDI-track path was exercised by the gesture on M1 (no hanging note across a switch, MKII) and by the CF METER workload with eight MIDI tracks on every step at 300 BPM."
+    "droppedExplanation": "Hangs 0: in the OCTABAM10 take the unit's clock output kept running throughout (longest gap 126 ms), the CF METER readout never stopped, idle stayed above 0 % in every 2 s cycle and no frame interrupt exceeded the frame; the contributor reports the sequencer playing and M1-M4 sending during the flood. Stuck notes unmeasured: the MIDI tracks' notes do not reach the USB port (octabam's USB module mirrors midi_send and realtime bytes only; on the unit only clock came back, with or without the flood and on internal or external clock), and the USB-MIDI interface's DIN input received nothing from the unit's MIDI OUT, so no note-off accounting after STOP, the Part change or the channel change was possible. Drops unmeasured: the module takes no MIDI input, and the unit gives no echo of what it received. An earlier USB MIDI flood saturated both images (octabam's issue sambanks/octabam#856, see TESTING.md)."
   }
 }
