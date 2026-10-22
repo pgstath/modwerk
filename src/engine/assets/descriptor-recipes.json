@@ -4070,7 +4070,7 @@
       ]
     }
   ],
-  "sourceCommit": "7fabb23f2b87a334447ca20f2396d629c5788bf0",
+  "sourceCommit": "8d168223d93f7c9dc30ce4cfeda2af9525bd1baa",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -4099,6 +4099,7 @@
     "poly8": "0.3.0-experimental",
     "output-matrix": "0.1.1-experimental",
     "quantize-live-rec-toggle": "0.1.0-experimental",
-    "apply-scene": "0.1.0-experimental"
+    "apply-scene": "0.1.0-experimental",
+    "trackpatterns": "0.1.0-experimental"
   }
 }
