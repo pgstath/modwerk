@@ -409,6 +409,70 @@ working as expected; nothing more detailed was reported.
 | 2c | SCALE MODE NORMAL on A01 | T1 wraps at A01's length | not reported separately |
 | 2e | GRID REC in a 32-step pattern, page 2 | the stock trigs blink as the warning | not reported separately |
 
+## Modwerk build OCTABAM15 (22 Oct 2026, emulator)
+
+**The image.** Native octabam, from a scratch copy of this branch
+(`module/trackpatterns` at `07ab1485`, Modwerk main `a3c5fd52`): a local
+remix of TRACK PATTERNS and the 14 stock effects, `static_stock`, then
+`make image REMIX=trackpatterns-test BUILD=15`. It was built from the
+contributor's own OS 1.40C; the card file's checksum validates.
+
+| file | SHA-256 |
+|---|---|
+| `OCTATRACK_OCTABAM15.bin` | `5f246da31ea85fd5018564a21b82284902bf9f2ce81b2a7d508365c64d2f304b` |
+| `OCTATRACK_OS1.40C_OCTABAM15.syx` | `3f026e0ccf70c9a96c1773dc304c20b28faaf847ec8eacd9f53aeb0488f13fb8` |
+| `mainos_bus.bin` (the OS section the emulator runs) | `eec3061ab40fe3920fd601c3b8efde0070d10a54c488ab3865ea718e540ca434` |
+
+**Gesture run.** Under `ot_emu --mkii` (STEPTPM, the gesture, MIDI and
+global-change script) it gives the same 72 events and values, in the same
+order, as build 3.
+
+**Captures.** `media/` holds three captures from `scripts/capture-module-ui.py`
+on this `mainos_bus.bin` (empty scratch card, MKII panel, stopped
+transport). The plan and the hashes are in `media/capture.json`:
+- the main screen while TRACK 1 and PATTERN are held;
+- the `T1 ▸ A03` popup after TRIG 3;
+- the `T1 FOLLOWS` popup after TRIG 1.
+
+**Memory, from `out/platform/runtime/runtime.elf`.** This remix has no
+other DRAM unit, so the runtime is this module.
+
+| region | bytes |
+|---|---|
+| `.text` (code, with `tp_state` 68 B and `tp_toast` 16 B) | 3,452 |
+| `.rodata` (the popup strings) | 9 |
+| the unit | 3,461 |
+| of which state | 84 |
+| eight `jmp` detours over stock instructions (6 + 6 + 8 + 8 + 6 + 6 + 6 + 6) | 52 |
+
+There is no `.bss`, heap, battery RAM or DSP memory. The deepest stack is
+about 72 B below the tick's caller (`-fstack-usage`: `tp_leds` 48 B, `tp_key`
+24 B, `tp_seq_pattern` 20 B). Like every DRAM module, the build gives up
+about 10 MB of sample memory to the platform reserve, which every DRAM
+module shares. octabam's build report printed 3,457 B for the unit; this
+table uses the ELF's own section sizes.
+
+**Cycles.** The worst event is one sequencer step of all 16 tracks.
+
+- **Instructions.** The per-call maximums measured in review round 1 (above)
+  give 8 × (95 + 186) for the audio tracks plus 8 × (98 + 84) for the MIDI
+  tracks: 3,704 instructions, the replayed stock instructions included. The
+  LED pass is a separate event, at most 658 instructions.
+- **Allowance.** At 32 cycles per instruction (Play Modes' convention: an
+  allowance, not chip timing, no contention modelled), that is 118,528
+  cycles per step.
+- **Budget.** The shortest step is a 16th at 300 BPM and 2X track speed:
+  25 ms, or 6,600,000 cycles at 264 MHz.
+- **Load on the unit.** CF METER (above) measured it with stock's own work
+  included: with every track following, no change against the build without
+  the module; with eight overrides, the LED pass and gestures, 1.49 points
+  less idle and the frame interrupt unchanged.
+
+**Not run on a unit yet.** OCTABAM15 has not been flashed. The
+qualification's hardware record cites `OCTABAM9`, an octabam build of the
+same C and assembly (octabam `f1eb1507`), until a run of OCTABAM15 is
+reported.
+
 ## Not yet
 
 On the unit: a long run, more tracks at once. Anywhere: the track's speed

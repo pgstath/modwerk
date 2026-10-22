@@ -175,7 +175,7 @@ median / max, counting the stock instructions each detour replays.
 | the LED pass's own part | 52 / 658 |
 
 - A 16-track step is about 2,360 instructions, 3,700 at most.
-- Memory: 3,457 B of code and data, 84 B of it state. No `.bss`, heap,
+- Memory: 3,461 B of code and data, 84 B of it state. No `.bss`, heap,
   battery RAM or DSP words. The stack is about 72 B.
 - Chip cycles per detour are not measured.
 
@@ -202,7 +202,12 @@ address was found: [INVESTIGATION.md](INVESTIGATION.md).
 
 ## Screens and audio
 
-The real black-and-white LCD captures are still to be made, in the
-headless emulator from this module's Modwerk build: the main screen with
-the `T1 ▸ A03` and `T1 FOLLOWS` popups. The module has no sound of its own
-and no audio preview.
+These were captured in the headless emulator from this module's native
+Modwerk build, OCTABAM15 (`media/capture.json`), as black-and-white LCD
+pixels. The module has no sound of its own and no audio preview.
+
+![Main screen of pattern A01: hold TRACK 1, then PATTERN](media/ot-gesture-held.png)
+
+![Press TRIG 3: the popup reads T1 ▸ A03](media/ot-t1-a03.png)
+
+![The playing pattern's trig, TRIG 1: the popup reads T1 FOLLOWS](media/ot-t1-follows.png)

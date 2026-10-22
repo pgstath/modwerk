@@ -1624,3 +1624,34 @@ Apply Scene is a ColdFire-only scenes module: one detour at the entry of stock's
 - **Placement.** The unit is a DRAM unit (`Linked(cpu="5475", dram=True)`, Play Modes' path). As an image-linked ROM unit it took the image's free run before Preview Vol natively, while the browser builder places Preview Vol's fixed-origin ROM unit first: 10 of 130 selections differed. As a DRAM unit `npm run module:verify -- apply-scene` records 58 matching images, 72 matching refusals and 0 mismatches. `module:verify -- --all --check` on this branch shows no mismatch in any selection with Apply Scene; the other modules' recorded mismatches occur only in selections without it (not compared against an untouched main checkout).
 - **Packages.** `build-module-packages.py` lists it as a requested ColdFire module. Its USB package (`--octabam`, ABI 7, one hashed site, no relocations) is byte-identical whether the card build links the unit in the image or in DRAM; it shares no 12-byte run with the stock OS and no 16-byte run (`check_stock_free.py`), and the adapted ot_emu's `sites` scenario installed and removed it on the beta base.
 - **Gate and hardware.** `verify.py` passes 179 checks on the native image of the final source (the applied bytes equal stock's morph model, mutes, key orders, a worst case with every scene byte locked, Part and project save and reload, an emulated power cycle). The contributor ran the USB package of the previous source revision, with the same code, on an MKII over the beta base: all three modes, NOTHING TO APPLY, Keep, Undo, removal and a power cycle ([TESTING.md](../sdk/octabam/modules/apply-scene/TESTING.md)). `evidence/performance.json` leaves the MIDI-flood load and stress rows empty: the module has no frame-interrupt or MIDI work.
+
+## Track Patterns 0.1.0-experimental — 22 October 2026
+
+Track Patterns is a ColdFire-only module. It gives each track its own
+pattern of the playing bank (TRACK + PATTERN + TRIG). It has eight `jmp`
+detours (the audio and MIDI tick, rebuild and advance; the PATTERN layer's
+trig press; the LED dispatcher) and one 3,461-byte DRAM unit.
+
+- **Placement.** A DRAM unit (`Linked(cpu="5475", dram=True)`, Play Modes'
+  path). Play Modes' step-load and rebuild detours end where these begin;
+  `modules:compat` finds no shared byte with any active module or the base.
+- **Packages.** `build-module-packages.py` lists it as a requested ColdFire
+  module. The packages were rebuilt in the pinned toolchain image and
+  imported.
+- **Native comparison.** `npm run module:verify -- trackpatterns` on the
+  contributor's original 1.40C: 60 native module-owned images match the
+  browser builder, 82 refusals match, 0 mismatches, of 142 selections. The
+  refusals come from other modules' DSP placement (for example LOFI2 beside
+  E-Verb and Air Chorus).
+- **Gate and emulator.** `verify.py` passes the host suites and checks that
+  `trackpatterns.s` matches the C. The native image OCTABAM15 of this folder
+  gives the same 72 gesture, MIDI and global-change events under `ot_emu`
+  as the octabam build the contributor played; the LCD captures come from
+  that image.
+- **Hardware.** The contributor reported octabam builds of the same C and
+  assembly as passing on an MKII: functional tests, trig LEDs, 32 steps,
+  other trig modes, and beside KITS and DIRECT JUMP.
+  - CF METER compared the unit's load with and without the module: 1.5
+    points of idle, and 9.8 µs more on the longest frame interrupt.
+  - OCTABAM15 itself, the USB package and a MIDI flood stress run have not
+    been run on a unit.

@@ -1,0 +1,106 @@
+{
+  "firmware": "1.40C",
+  "imageSha256": "eec3061ab40fe3920fd601c3b8efde0070d10a54c488ab3865ea718e540ca434",
+  "emulatorSha256": "afac11d2817b7f1ab8b6e7210d3c6b37dd66eaf5de22fc7ec24f9353285eb5a8",
+  "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+  "palette": {
+    "on": [
+      240,
+      240,
+      240
+    ],
+    "off": [
+      24,
+      24,
+      24
+    ]
+  },
+  "keyMs": 150,
+  "plan": [
+    {
+      "wait": 3000
+    },
+    {
+      "press": [
+        "YES"
+      ]
+    },
+    {
+      "wait": 2000
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "wait": 1000
+    },
+    {
+      "hold": [
+        "T1",
+        "PTN"
+      ]
+    },
+    {
+      "wait": 300
+    },
+    {
+      "capture": "ot-gesture-held.png"
+    },
+    {
+      "press": [
+        "TRIG3"
+      ]
+    },
+    {
+      "wait": 150
+    },
+    {
+      "capture": "ot-t1-a03.png"
+    },
+    {
+      "release": [
+        "PTN",
+        "T1"
+      ]
+    },
+    {
+      "wait": 2500
+    },
+    {
+      "hold": [
+        "T1",
+        "PTN"
+      ]
+    },
+    {
+      "wait": 300
+    },
+    {
+      "press": [
+        "TRIG1"
+      ]
+    },
+    {
+      "wait": 150
+    },
+    {
+      "capture": "ot-t1-follows.png"
+    },
+    {
+      "release": [
+        "PTN",
+        "T1"
+      ]
+    },
+    {
+      "wait": 500
+    }
+  ],
+  "screenshots": {
+    "ot-gesture-held.png": "b28d825b71eb0b1f7e2b639fe1150392d59d0346d38dc5c9e81d24c4d59a1603",
+    "ot-t1-a03.png": "a62eeaf3c9e527c09092c5362f51741d6c8d66c5aeb867df5fc552ab1212b222",
+    "ot-t1-follows.png": "5808c463a1d037550fdeb50b3c5d38b074e84d337ed76ba4111b74ead6d1343b"
+  }
+}

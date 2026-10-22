@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "trackpatterns",
+  "version": "0.1.0-experimental",
+  "kind": "coldfire",
+  "cycles": {
+    "unit": "cycles/event",
+    "static": 118528,
+    "measured": 75520,
+    "budget": 6600000,
+    "method": "Worst event: one sequencer step of all 16 tracks. Instruction counts per detour call under ot_emu --mkii (the gesture, MIDI and global-change run on STEPTPM; entry to the stock instruction it returns to, replayed stock instructions included). static: the per-call maximums summed, 8 x (95 + 186) + 8 x (98 + 84) = 3,704 instructions; measured: the per-call medians summed, about 2,360 instructions; both at a 32 cycles/instruction allowance (Play Modes' convention), not measured chip timing. The LED pass is a separate event of at most 658 instructions. Budget: one step at 300 BPM and 2X track speed, 25 ms at 264 MHz. See TESTING.md."
+  },
+  "load": {
+    "frameUs": 362.8,
+    "stockLongestUs": 326.4,
+    "moduleLongestUs": 336.2,
+    "stockIdlePercent": 17.58,
+    "moduleIdlePercent": 16.1,
+    "method": "cfmeter.py on 120 s USB captures of T8 (CF METER on T8 FX2, BURN/MEM/DBRN 0) on the contributor's MKII, 22 Oct 2026: OCTABAM11 (USB, CF METER, CF METER IDLE and the stock effects except DARK REV) against OCTABAM10 (the same plus TRACK PATTERNS), both from octabam 05d8701c. Workload, the same in every take: 300 BPM, a trig on every step of T1-T7 and M1-M8 in A01, A02 and A03 copies of A01; with the module, T1-T4 and M1-M4 on A02/A03, T1 current outside GRID REC (the LED pass) and a few gestures. Longest frame interrupt: the worst 2 s cycle; idle: the mean over 59 cycles. A sequencer load, not a MIDI flood: no MIDI input was sent. With every track following, idle was 17.78 % (no difference within the noise). The stock take had no key presses, so part of the difference is the gestures' UI work."
+  },
+  "stress": {
+    "floodMessagesPerSecond": null,
+    "clockBpm": null,
+    "seconds": null,
+    "stuckNotes": null,
+    "hangs": null,
+    "dropped": null,
+    "droppedExplanation": "No MIDI flood run yet. The module takes no MIDI input; its MIDI-track path was exercised by the gesture on M1 (no hanging note across a switch, MKII) and by the CF METER workload with eight MIDI tracks on every step at 300 BPM."
+  }
+}

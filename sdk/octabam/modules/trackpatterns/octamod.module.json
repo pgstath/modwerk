@@ -41,7 +41,11 @@
       "Hold TRACK 1, then hold PATTERN, and press TRIG 3: the popup reads T1 ▸ A03 and track 1 switches to A03 at the end of its loop.",
       "Repeat the gesture with the playing pattern's trig to return one track (T1 FOLLOWS), or change the global pattern to return them all."
     ],
-    "screenshots": []
+    "screenshots": [
+      "media/ot-gesture-held.png",
+      "media/ot-t1-a03.png",
+      "media/ot-t1-follows.png"
+    ]
   },
   "controls": [],
   "compatibility": {
@@ -68,11 +72,11 @@
     "recorded": "22 Oct 2026: emulator counts, build memory, MKII CF METER; chip cycles unmeasured",
     "storage": {
       "label": "DRAM",
-      "display": "3,457 B unit in the DRAM platform reserve",
-      "value": 3457,
+      "display": "3,461 B unit in the DRAM platform reserve",
+      "value": 3461,
       "unit": "bytes",
       "method": "static",
-      "conditions": "Code, read-only data and the 84-byte state (tp_state 68 B, tp_toast 16 B) in the SDRAM platform reserve; no .bss, heap, battery RAM or DSP words; stack about 72 B below the tick's caller (-fstack-usage). See TESTING.md.",
+      "conditions": "Code and read-only data (3,377 B) and the 84-byte state (tp_state 68 B, tp_toast 16 B) in the SDRAM platform reserve, from runtime.elf of OCTABAM15; plus eight jmp detours (52 B) over stock instructions. No .bss, heap, battery RAM or DSP words; stack about 72 B below the tick's caller (-fstack-usage). See TESTING.md.",
       "source": "TESTING.md"
     },
     "processing": {
@@ -101,7 +105,7 @@
       "memory": {
         "level": "low",
         "basis": "source-estimate",
-        "rationale": "A 3,457-byte DRAM unit with 84 bytes of state; no per-instance copies, no battery RAM.",
+        "rationale": "A 3,461-byte DRAM unit with 84 bytes of state; no per-instance copies, no battery RAM.",
         "source": "TESTING.md"
       }
     }
@@ -110,15 +114,158 @@
     "report": "TESTING.md",
     "summary": "Host suites for the engine and firmware glue pass, including planted defects and the check that trackpatterns.s matches the C. Under the ColdFire port the gesture moved T1 and M1 at their own loop starts, a global change cleared both and the trig LEDs behaved as documented, on an MKI and an MKII. On one MKII the contributor reported octabam builds of this source as passing: functional tests and trig LEDs (OCTABAM1-3), beside KITS and DIRECT JUMP (OCTABAM8), 32 steps and other trig modes (OCTABAM9). CF METER compared the unit's load with and without the module. Not yet: a Modwerk-built image on a unit, the USB path, chip cycles per detour, a long run.",
     "hardwareStatus": "reported",
-    "evidenceRevision": "a3a7e3288da379ca1b8ff244ef4bae2a50af3fcf",
+    "evidenceRevision": "f1eb1507a298275c3ff7763fb4aab8de692d0102",
     "gates": [
       "modules/trackpatterns/verify.py"
-    ]
+    ],
+    "qualification": {
+      "moduleVersion": "0.1.0-experimental",
+      "sourceSha256": "ee4c301b0148081d43addc8eda5b8517f69068198680b3007b55519191c4a41d",
+      "imageSha256": "4fb7b88903d21f5ea90f524978c14a0d79e063cd986c0c9dbc93d406eb16d2e7",
+      "cycles": [
+        {
+          "processor": "coldfire",
+          "worstCase": 118528,
+          "maxConfiguration": 118528,
+          "maxInstances": 1,
+          "budget": 6600000,
+          "unit": "cycles/event",
+          "method": "emulator",
+          "conditions": {
+            "parameterExtremes": "The step and advance entries for every branch: a track following, a change queued, a change landing at the loop start, a track on its own pattern, lengths 1-64 under both scale modes, MASTER LENGTH cuts, a global and a bank change clearing every override, audio and MIDI tracks (host suites); the counted maximums come from the ColdFire-port run with changes landing on T1 and M1 and a global change clearing them (1,096 tick and 1,088 advance calls per track type).",
+            "parameterModulation": "Not applicable: the module has no parameters; LFOs, parameter locks, scenes and MIDI CC are processed by stock code after the step handler and are not reached by the module. The track's own pattern's locks pass through the stock step handler unchanged, so their cost is stock's.",
+            "modeSwitching": "Repeated gestures queuing, landing and clearing changes, TRACK + PATTERN + trig back to following, the stopped case (applied at once) and PLAY restarts; the LED pass across the main page, GRID REC and the PATTERN layer.",
+            "maxLoad": "One instance (a global module). The worst event is one sequencer step of all 16 tracks: 8 x (95 + 186) + 8 x (98 + 84) = 3,704 instructions at the per-call maximums measured, priced at a 32-cycle-per-instruction allowance = 118,528 cycles, against one step at 300 BPM and 2X track speed (25 ms = 6,600,000 cycles at 264 MHz). The LED pass is a separate event of at most 658 instructions. On an MKII, CF METER at 300 BPM with 15 tracks on every step and eight overrides: idle 1.49 points lower than without the module, frame interrupt unchanged.",
+            "inputConditions": "Independent of audio. Instruction counts from the detour entry to the stock instruction it returns to, the replayed stock instructions included, under the ColdFire port without contention; the 32-cycle allowance is not chip timing. The stock step handler's own cost is stock's and excluded."
+          },
+          "report": "TESTING.md"
+        }
+      ],
+      "memory": {
+        "regions": [
+          {
+            "name": "DRAM unit trackpatterns: code and popup strings (platform reserve)",
+            "space": "sdram",
+            "words": 3377,
+            "wordBits": 8,
+            "bytes": 3377,
+            "scope": "shared"
+          },
+          {
+            "name": "DRAM unit trackpatterns: state tp_state and tp_toast",
+            "space": "sdram",
+            "words": 84,
+            "wordBits": 8,
+            "bytes": 84,
+            "scope": "shared"
+          },
+          {
+            "name": "Eight jmp detours written over stock instructions in place",
+            "space": "cpu-flash",
+            "words": 52,
+            "wordBits": 8,
+            "bytes": 52,
+            "scope": "shared"
+          }
+        ],
+        "perInstanceBytes": 0,
+        "sharedBytes": 3513,
+        "maxInstances": 1,
+        "totalBytes": 3513,
+        "conditions": "From runtime.elf of OCTABAM15 (.text 3,452 B including the 84 B of state, .rodata 9 B) and the eight detours (6+6+8+8+6+6+6+6 B). No .bss, heap, battery RAM or DSP memory; the deepest stack is about 72 B below the tick's caller (-fstack-usage), no canary measured on hardware. The platform reserve's 10 MB of sample memory is shared by every DRAM module.",
+        "report": "TESTING.md"
+      },
+      "hardware": {
+        "kind": "functional",
+        "status": "reported",
+        "model": "MKII",
+        "testedOn": "2026-10-22",
+        "tester": "pgstath",
+        "sourceRevision": "f1eb1507a298275c3ff7763fb4aab8de692d0102",
+        "imageSha256": "4fb7b88903d21f5ea90f524978c14a0d79e063cd986c0c9dbc93d406eb16d2e7",
+        "summary": "OCTABAM9, octabam's build (remix trackpatterns, octabam f1eb1507) of the same C and assembly, on the contributor's MKII: T1 on a 32-step pattern by the gesture under PER TRACK with MASTER LENGTH 32 played all 32 steps with the trig LEDs following the playhead's page, and in the other trig modes, CHROMATIC included, the module drew no trig LED; reported as working as expected. The same source in OCTABAM8 (octabam-core, image 2a698188…) passed the gesture on T1 and M1, a global change, and save and power cycle; earlier builds of this source passed the full functional and LED checks (TESTING.md).",
+        "limitations": [
+          "The tested images are octabam builds of the same C and assembly; this folder's manifest.py is the Modwerk form of the same eight detours. The Modwerk build OCTABAM15 (5f246da3…) has not run on a unit yet.",
+          "Not tested on the unit: the USB (base) path, MKI, track speeds other than 1x, swing, a long run, MIDI note-offs across a switch with a long note; MASTER LENGTH 16, NORMAL and GRID REC page 2 with a 32-step override were not reported separately.",
+          "Open: a silent hang after 5-20 minutes on the main screen with an override set was seen on OCTABAM2 and OCTABAM3 and is not yet explained.",
+          "How long the tests ran was not recorded."
+        ],
+        "report": "TESTING.md"
+      },
+      "documentation": {
+        "tutorial": {
+          "title": "Quick tutorial",
+          "steps": [
+            "Include Track Patterns in your build. Load a project whose bank has A01 and A03 with different trigs on track 1, select A01 and press PLAY.",
+            "Hold TRACK 1, hold PATTERN and press TRIG 3: the popup reads T1 ▸ A03, and at the end of its loop track 1 plays A03's trigs while every other track stays on A01. With track 1 current, its trig keys blink A03's trigs.",
+            "Hold TRACK 1, hold PATTERN and press TRIG 1: the popup reads T1 FOLLOWS and track 1 returns to A01 at the end of its loop. A global pattern change (PATTERN + TRIG without a TRACK key) brings every track back."
+          ]
+        },
+        "screenshots": [
+          "media/ot-gesture-held.png",
+          "media/ot-t1-a03.png",
+          "media/ot-t1-follows.png"
+        ],
+        "screenshotStyle": "black-and-white"
+      }
+    }
   },
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
     "declaration": "Original code by pgstath, MIT. Sequencer addresses and findings are cited from public module investigations and read from the author's own OS; no code from them, and no Elektron firmware, extracted routines, tables or images are included."
   },
-  "media": []
+  "media": [
+    {
+      "path": "media/ot-gesture-held.png",
+      "captureType": "emulator",
+      "caption": "Track Patterns has no menu: it works on the main screen. Hold TRACK 1, then hold PATTERN; the screen stays as it is until you press a trig key.",
+      "alt": "Main screen of pattern A01 with track 1's playback page, tempo 120.0.",
+      "credit": "pgstath (headless capture); Track Patterns by pgstath",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "Main screen, TRACK + PATTERN held",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "eec3061ab40fe3920fd601c3b8efde0070d10a54c488ab3865ea718e540ca434",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card, pattern A01, native Modwerk build OCTABAM15 of module/trackpatterns 07ab1485 (TRACK PATTERNS and the 14 stock effects)."
+      }
+    },
+    {
+      "path": "media/ot-t1-a03.png",
+      "captureType": "emulator",
+      "caption": "Still holding TRACK 1 and PATTERN, press TRIG 3: the popup reads T1 ▸ A03. Track 1 plays A03 from the end of its loop (at once while stopped); every other track stays on A01.",
+      "alt": "Main screen of pattern A01 with a popup reading T1 ▸ A03.",
+      "credit": "pgstath (headless capture); Track Patterns by pgstath",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "Main screen, TRACK + PATTERN + TRIG popup",
+        "shows": "location-and-controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "eec3061ab40fe3920fd601c3b8efde0070d10a54c488ab3865ea718e540ca434",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card, pattern A01, native Modwerk build OCTABAM15 of module/trackpatterns 07ab1485 (TRACK PATTERNS and the 14 stock effects)."
+      }
+    },
+    {
+      "path": "media/ot-t1-follows.png",
+      "captureType": "emulator",
+      "caption": "To bring track 1 back, hold TRACK 1 and PATTERN and press the playing pattern's trig, here TRIG 1: the popup reads T1 FOLLOWS. A global pattern change brings every track back.",
+      "alt": "Main screen of pattern A01 with a popup reading T1 FOLLOWS.",
+      "credit": "pgstath (headless capture); Track Patterns by pgstath",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "Main screen, TRACK + PATTERN + TRIG popup",
+        "shows": "location-and-controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "eec3061ab40fe3920fd601c3b8efde0070d10a54c488ab3865ea718e540ca434",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card, pattern A01, native Modwerk build OCTABAM15 of module/trackpatterns 07ab1485 (TRACK PATTERNS and the 14 stock effects)."
+      }
+    }
+  ]
 }
